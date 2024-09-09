@@ -1,5 +1,10 @@
 :root {
-  --before-content: "1";
+  --hoursContent-0: "";
+  --hoursContent-1: "";
+  --minutesContent-0: "";
+  --minutesContent-1: "";
+  --secondsContent-0: "";
+  --secondsContent-1: "";
 }
 html {
   box-sizing: border-box;
