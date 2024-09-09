@@ -4,7 +4,7 @@ export default {
     return {
       intervalId: 0,
       currentTime: Date.now(),
-      targetTime: new Date("2024, 9,10").getTime(),
+      targetTime: new Date("2024,9,11").getTime(),
       timeDifInSeconds: 0,
       seconds: [],
       minutes: [],
@@ -20,7 +20,7 @@ export default {
 
       const { formattedHours, formattedMinutes, formattedSeconds } =
         this.formatTime(this.hours, this.minutes, this.seconds);
-
+      console.log(this.hours, this.minutes, this.seconds);
       return {
         hours: formattedHours,
         minutes: formattedMinutes,
@@ -33,9 +33,6 @@ export default {
         formattedMinutes: minutes.toString().padStart(2, "0").split(""),
         formattedSeconds: seconds.toString().padStart(2, "0").split(""),
       };
-    },
-    updateValue(ev) {
-      console.log(ev);
     },
   },
   computed: {
@@ -89,7 +86,7 @@ export default {
   },
   mounted() {
     const that = this;
-    this.timeDifInSeconds = this.targetTime - this.currentTime / 1000;
+    this.timeDifInSeconds = (this.targetTime - this.currentTime) / 1000;
     this.intervalId = setInterval(() => {
       that.timeDifInSeconds--;
     }, 1000);
