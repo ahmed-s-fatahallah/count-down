@@ -17,10 +17,14 @@ export default {
       this.hours = Math.floor(this.timeDifInSeconds / 3600);
       this.minutes = Math.floor((this.timeDifInSeconds % 3600) / 60);
       this.seconds = Math.floor(this.timeDifInSeconds % 60);
-
+      console.log("loging");
       const { formattedHours, formattedMinutes, formattedSeconds } =
-        this.formatTime(this.hours, this.minutes, this.seconds);
-      console.log(this.hours, this.minutes, this.seconds);
+        this.formatTime(
+          this.hours <= 0 ? 0 : this.hours,
+          this.minutes <= 0 ? 0 : this.minutes,
+          this.seconds <= 0 ? 0 : this.seconds
+        );
+
       return {
         hours: formattedHours,
         minutes: formattedMinutes,
@@ -88,6 +92,9 @@ export default {
     const that = this;
     this.timeDifInSeconds = (this.targetTime - this.currentTime) / 1000;
     this.intervalId = setInterval(() => {
+      if (that.timeDifInSeconds <= 0) {
+        clearInterval(this.intervalId);
+      }
       that.timeDifInSeconds--;
     }, 1000);
   },
