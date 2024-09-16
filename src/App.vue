@@ -1,10 +1,52 @@
+<template>
+  <section class="wrapper">
+    <h1 class="header">Draft <span>CountDown</span></h1>
+    <div class="date-picker">
+      <label for="date-picker">Pick a target date</label>
+      <input type="date" id="date-picker" v-model="targetTime">
+    </div>
+    <section class="counter">
+      <p>Hours</p>
+      <p>Minutes</p>
+      <p>Seconds</p>
+      <div class="hours">
+        <span class="active" :key="calculateTime().hours[0]"
+          >{{ getPrevTime.prevHours0 }} <span class="line"></span
+        ></span>
+        <span class="active" :key="calculateTime().hours[1]"
+          >{{ getPrevTime.prevHours1 }} <span class="line"></span
+        ></span>
+      </div>
+      <span class="separator">:</span>
+      <div class="minutes">
+        <span class="active" :key="calculateTime().minutes[0]"
+          >{{ getPrevTime.prevMinute0 }} <span class="line"></span
+        ></span>
+        <span class="active" :key="calculateTime().minutes[1]"
+          >{{ getPrevTime.prevMinute1 }} <span class="line"></span
+        ></span>
+      </div>
+      <span class="separator">:</span>
+      <div class="seconds">
+        <span class="active" :key="calculateTime().seconds[0]"
+          >{{ getPrevTime.prevSecond0 }} <span class="line"></span
+        ></span>
+        <span class="active" :key="calculateTime().seconds[1]"
+          >{{ getPrevTime.prevSecond1 }} <span class="line"></span
+        ></span>
+      </div>
+    </section>
+  </section>
+</template>
+
+
 <script>
 export default {
   data() {
     return {
       intervalId: 0,
       currentTime: Date.now(),
-      targetTime: new Date("2024,9,11").getTime(),
+      targetTime: null,
       timeDifInSeconds: 0,
       seconds: [],
       minutes: [],
@@ -17,7 +59,7 @@ export default {
       this.hours = Math.floor(this.timeDifInSeconds / 3600);
       this.minutes = Math.floor((this.timeDifInSeconds % 3600) / 60);
       this.seconds = Math.floor(this.timeDifInSeconds % 60);
-      console.log("loging");
+      
       const { formattedHours, formattedMinutes, formattedSeconds } =
         this.formatTime(
           this.hours <= 0 ? 0 : this.hours,
@@ -87,61 +129,33 @@ export default {
         `"${this.calculateTime().seconds[1]}"`
       );
     },
+    targetTime:{
+      handler(newValue){
+        if(this.intervalId)clearInterval(this.intervalId);
+        
+      const targetTime = new Date(newValue).getTime()  
+      const that = this;
+      this.timeDifInSeconds = (targetTime - this.currentTime) / 1000;
+      this.intervalId = setInterval(() => {
+        if (that.timeDifInSeconds <= 0) {
+          clearInterval(that.intervalId);
+        }
+        that.timeDifInSeconds--;
+      }, 1000);
+    }
   },
-  mounted() {
-    const that = this;
-    this.timeDifInSeconds = (this.targetTime - this.currentTime) / 1000;
-    this.intervalId = setInterval(() => {
-      if (that.timeDifInSeconds <= 0) {
-        clearInterval(this.intervalId);
-      }
-      that.timeDifInSeconds--;
-    }, 1000);
-  },
-  beforeUnmount() {
-    clearInterval(this.intervalId);
-  },
+},
+
+  
 };
 </script>
 
-<template>
-  <section class="wrapper">
-    <h1 class="header">Draft <span>CountDown</span></h1>
-    <section class="counter">
-      <p>Hours</p>
-      <p>Minutes</p>
-      <p>Seconds</p>
-      <div class="hours">
-        <span class="active" :key="calculateTime().hours[0]"
-          >{{ getPrevTime.prevHours0 }} <span class="line"></span
-        ></span>
-        <span class="active" :key="calculateTime().hours[1]"
-          >{{ getPrevTime.prevHours1 }} <span class="line"></span
-        ></span>
-      </div>
-      <span class="separator">:</span>
-      <div class="minutes">
-        <span class="active" :key="calculateTime().minutes[0]"
-          >{{ getPrevTime.prevMinute0 }} <span class="line"></span
-        ></span>
-        <span class="active" :key="calculateTime().minutes[1]"
-          >{{ getPrevTime.prevMinute1 }} <span class="line"></span
-        ></span>
-      </div>
-      <span class="separator">:</span>
-      <div class="seconds">
-        <span class="active" :key="calculateTime().seconds[0]"
-          >{{ getPrevTime.prevSecond0 }} <span class="line"></span
-        ></span>
-        <span class="active" :key="calculateTime().seconds[1]"
-          >{{ getPrevTime.prevSecond1 }} <span class="line"></span
-        ></span>
-      </div>
-    </section>
-  </section>
-</template>
 
 <style scoped>
+.date-picker{
+  display: flex;
+  gap: 2rem;
+}
 .header {
   text-align: center;
   font-weight: 100;
